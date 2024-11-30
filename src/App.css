@@ -75,6 +75,7 @@ main {
     display: flex;
     flex-direction: column;
     margin-bottom: 12px;
+    position: relative;
 }
 
 .input-container label {
@@ -117,6 +118,13 @@ main {
 #category{
     height: 28px;
     font: inherit;
+}
+.error{
+    color: red;
+    font-size: 12px;
+    margin: 0;
+    position: absolute;
+    top: 100%;
 }
 
 @media (max-width: 900px) {
