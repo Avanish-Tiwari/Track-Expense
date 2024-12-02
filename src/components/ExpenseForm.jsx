@@ -2,36 +2,58 @@ import React, { useState } from "react"
 import Input from "./Input"
 import Select from "./Select"
 
+
 export default function ExpenseForm({ setExpenses }) {
-  const [title, setTitle] = useState("")
-  const [category, setCategory] = useState("")
-  const [amount, setAmount] = useState("")
+
   const [expense, setExpense] = useState({
     title: "",
     category: "",
     amount: "",
   })
   const [errors, setErrors] = useState({})
+  const validationConfig={
+    title:[
+      {required:true, message:"Please Enter Title"},
+      {minLength:5, message:"Title should be at least 5 characters"}
+    ],
+    category: [{ required: true, message: 'Please select a category' }],
+    amount: [{ required: true, message: 'Please enter an amount' },
+      
+    ],
+    email: [
+      { required: true, message: 'Please enter an email' },
+      {
+        pattern: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+        message: 'Please enter a valid email',
+      },
+    ],
+  }
   const validate = (formData) => {
     const errorMessage = {}
-    if (!formData.title) {
-      errorMessage.title = "Title is required"
-    }
-    if (!formData.category) {
-      errorMessage.category = "Category is required"
-    }
-    if (!formData.amount) {
-      errorMessage.amount = "Amount is required"
-    }
+
+    Object.entries(formData).forEach(([element,val]) => {
+      validationConfig[element].some((rule)=>{
+        if (rule.required && !val) {
+          errorMessage[element] = rule.message
+          return true
+        }
+        if (rule.minLength && val.length<5) {
+          errorMessage[element] = rule.message
+          return true
+        }
+        if (rule.pattern && !rule.pattern.test(val)) {
+          errorsData[element] = rule.message
+          return true
+        }
+      })
+    });
     setErrors(errorMessage)
     return errorMessage
-    // console.log(errorMessage)
   }
   const handleSubmit = (e) => {
     e.preventDefault()
     const validationData = validate(expense)
     if (Object.keys(validationData).length) return
-    // console.log(validationData)
     setExpenses((preState) => [
       ...preState,
       { ...expense, id: crypto.randomUUID() },
@@ -40,18 +62,9 @@ export default function ExpenseForm({ setExpenses }) {
     expense.category = ""
     expense.amount = ""
   }
-  // console.log("Rendering..")
-  // const getFormData= (form)=>{
-  //   const formData=new FormData(form);
-  //   const data={}
-  //   for(const [key,value] of formData.entries()){
-  //     data[key]=value
-  //   }
-  //   return data
-  // }
+
 
   const handleChange = (e) => {
-    // console.log(e.target)
     const { name, value } = e.target
 
     setExpense((prevState) => ({
@@ -60,7 +73,6 @@ export default function ExpenseForm({ setExpenses }) {
     }))
     setErrors({})
   }
-  // console.log(expense)
   return (
     <form className="expense-form" onSubmit={handleSubmit}>
       <Input
@@ -70,6 +82,7 @@ export default function ExpenseForm({ setExpenses }) {
         value={expense.title}
         onChange={handleChange}
         error={errors.title}
+        type='text'
       />
 
       <Select
@@ -89,6 +102,7 @@ export default function ExpenseForm({ setExpenses }) {
         value={expense.amount}
         onChange={handleChange}
         error={errors.amount}
+        type='number'
       />
 
       <button className="add-btn">Add</button>
