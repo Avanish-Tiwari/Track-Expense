@@ -43,7 +43,13 @@ main {
 .amount-column span {
     margin-right: 6px;
 }
+.title-column div {
+    display: flex;
+}
 
+.title-column span {
+    margin-right: 6px;
+}
 .arrow {
     transition: transform 0.2s ease-in-out;
     cursor: pointer;
@@ -125,6 +131,9 @@ main {
     margin: 0;
     position: absolute;
     top: 100%;
+}
+.clear-sort{
+    cursor: pointer;
 }
 
 @media (max-width: 900px) {
