@@ -3,13 +3,9 @@ import Input from "./Input"
 import Select from "./Select"
 
 
-export default function ExpenseForm({ setExpenses }) {
+export default function ExpenseForm({ setExpenses,expense,setExpense,editRowID , setEditRowID }) {
 
-  const [expense, setExpense] = useState({
-    title: "",
-    category: "",
-    amount: "",
-  })
+ 
   const [errors, setErrors] = useState({})
   const validationConfig={
     title:[
@@ -54,13 +50,24 @@ export default function ExpenseForm({ setExpenses }) {
     e.preventDefault()
     const validationData = validate(expense)
     if (Object.keys(validationData).length) return
+    if(editRowID){
+      setExpenses((prevState)=>{return prevState.map((data)=>{
+        if(data.id===editRowID){
+          return {...expense,id:editRowID}
+        }
+        return data
+      })})
+      setEditRowID("")
+    }else{
     setExpenses((preState) => [
       ...preState,
       { ...expense, id: crypto.randomUUID() },
-    ])
-    expense.title = ""
-    expense.category = ""
-    expense.amount = ""
+    ])}
+    // expense.title = ""
+    // expense.category = ""
+    // expense.amount = ""
+    setExpense({title:"",category:"",amount:""})
+    setEditRowID("")
   }
 
 
@@ -105,7 +112,7 @@ export default function ExpenseForm({ setExpenses }) {
         type='number'
       />
 
-      <button className="add-btn">Add</button>
+      <button className="add-btn">{editRowID ? "Save":"Add"}</button>
     </form>
   )
 }
