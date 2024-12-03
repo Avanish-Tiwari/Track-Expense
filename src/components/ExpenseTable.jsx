@@ -24,6 +24,7 @@ export default function ExpenseTable({expense, expenses, setExpenses, setExpense
         if(menuPosition.left){
           setMenuPosition({})
         }
+        
       }}>
         <thead>
           <tr>
